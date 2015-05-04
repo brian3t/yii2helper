@@ -1,0 +1,21 @@
+{
+    "name": "usv/yii2helper",
+    "description": "Yii2 greatest extensions, developed by USV Solutions. Array helpers, better php functions, Active Records shortcuts, etc...",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","helper"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "USV",
+            "email": "brian@usvsolutions.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "usv\\yii2helper\\": ""
+        }
+    }
+}
