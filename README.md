@@ -1,7 +1,7 @@
 <<<<<<< HEAD
 Yii2 greatest extensions
 ========================
-Yii2 greatest extensions, developed by USV Solutions. Array helpers, better php 
+Yii2 greatest extensions, developed by SuperbAppSolutions. Array helpers, better php 
 functions, Active Records shortcuts, etc...
 
 Installation
