@@ -24,4 +24,8 @@ class PHPHelper {
 	static public function dbNormalizeString($str){
 		return preg_replace( '/(\s)+/',"",strtolower($str));
 	}
+
+    static public function date_time_format($date_time){
+        return \Yii::$app->formatter->asDatetime($date_time, 'php:l, d-M-Y g:i:sA T');
+    }
 }
