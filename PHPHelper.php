@@ -57,5 +57,17 @@ class PHPHelper
         return $tmp;
     }
 
+    /**
+     * Steal a value from an array
+     * @param $array
+     * @param $key
+     * @return integer The stolen value
+     */
+    static public function steal_value(&$array, $key)
+    {
+        $value = isset($array[$key]) ? $array[$key] : null;
+        unset($array[$key]);
+        return $value;
+    }
 
 }
