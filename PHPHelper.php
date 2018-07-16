@@ -69,5 +69,43 @@ class PHPHelper
         unset($array[$key]);
         return $value;
     }
+    
+    /**
+     * Parse address with this format:
+     * add1 add2, city, state zip
+     * @param $address
+     * @return array
+     */
+    function parse_address($address)
+    {
+        /***
+         * 2008-05-08 used first for quickbooks import => database table
+         *
+         * johnson city, tex|tx|texas  78691[-1234]
+         * vancouver, bc A0A 0A0
+         * charlotte, n.c. 02899
+         ***/
+        $address = trim($address);
+        $zip = '([a-z0-9][0-9][a-z0-9][- ]*[0-9][a-z0-9][0-9]*)([- ]+([0-9]{4}))*';
+        $state = '([.a-z]{2,4})';
+        $parts = explode(',', $address);
+        array_walk($parts, function (&$part) {
+            $part = trim($part);
+        });
+        $state_zip = array_pop($parts);
+        if (!preg_match("/$state\s+$zip" . '$' . "/i", $state_zip, $matches)) {
+            return [];
+        }
+        if (sizeof($matches) < 2) {
+            return [];
+        }
+        $state = strtoupper(str_replace('.', '', $matches[1]));
+        $zip = $matches[2];
+        $city = array_pop($parts);
+        $address1 = array_pop($parts);
+        $address2 = array_pop($parts);
+
+        return compact('address1', 'address2', 'city', 'state', 'zip');
+    }
 
 }
