@@ -1,6 +1,6 @@
 <?php
 
-namespace usv\yii2helper;
+namespace yii2helper;
 /**
  * Created by PhpStorm.
  * User: tri
@@ -76,7 +76,7 @@ class PHPHelper
      * @param $address
      * @return array
      */
-    function parse_address($address)
+    public static function parse_address($address)
     {
         /***
          * 2008-05-08 used first for quickbooks import => database table
@@ -104,6 +104,9 @@ class PHPHelper
         $city = array_pop($parts);
         $address1 = array_pop($parts);
         $address2 = array_pop($parts);
+        if (!empty($address2)){
+            [$address1, $address2] = [$address2, $address1];
+        }
 
         return compact('address1', 'address2', 'city', 'state', 'zip');
     }
