@@ -19,7 +19,7 @@ trait ModelB3tTrait
      */
     public static function findOrCreate($attributes)
     {
-        $found_model = static::find($attributes);
+        $found_model = static::findOne($attributes);
         if ($found_model instanceof static) {
             return $found_model;
         } else {

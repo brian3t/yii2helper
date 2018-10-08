@@ -4,6 +4,15 @@ Yii2 greatest extensions
 Yii2 greatest extensions, developed by SuperbAppSolutions. Array helpers, better php 
 functions, Active Records shortcuts, etc...
 
+Changelog
+------------
+2018/10/08 
+- Implement ViewFormatter to support attr:json in GridView / SingleView
+- Implement EditColumn to support 'Click to Edit' in GridView
+- Implement ModelB3tTrait to support FindOrCreate for ActiveRecord 
+
+
+
 Installation
 ------------
 

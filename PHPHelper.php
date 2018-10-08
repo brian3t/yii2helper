@@ -1,13 +1,12 @@
 <?php
 
-namespace yii2helper;
+namespace usv\yii2helper;
 /**
  * Created by PhpStorm.
  * User: tri
  * Date: 5/4/15
  * Time: 1:56 PM
  */
-
 class PHPHelper
 {
     /**
@@ -16,9 +15,9 @@ class PHPHelper
      * @param string $glue
      * @return string
      */
-    static public function imp($glue = null, $array = null)
+    public static function imp($glue = null, $array = null)
     {
-        if (empty($array)){
+        if (empty($array)) {
             return "";
         }
         return implode($glue, $array);
@@ -27,12 +26,12 @@ class PHPHelper
     /*
      * Normalize strings to store into databases
      */
-    static public function dbNormalizeString($str)
+    public static function dbNormalizeString($str)
     {
         return preg_replace('/(\s)+/', "", strtolower($str));
     }
 
-    static public function date_time_format($date_time)
+    public static function dateTimeFormat($date_time)
     {
         return \Yii::$app->formatter->asDatetime($date_time, 'php:l, d-M-Y g:i:sA T');
     }
@@ -42,13 +41,13 @@ class PHPHelper
      * @param mixed $a array or object
      * @return array
      */
-    static public function array_key_to_underscore($a = null)
+    public static function arrayKeyToUnderscore($a = null)
     {
         $tmp = [];
-        if (is_null($a) && !is_array($a) && !is_object($a)){
+        if (is_null($a) && !is_array($a) && !is_object($a)) {
             return $tmp;
         }
-        foreach ($a as $k => $v){
+        foreach ($a as $k => $v) {
             $k = preg_replace_callback('([A-Z])', function ($uppercase) {
                 return '_' . strtolower(array_shift($uppercase));
             }, $k);//uppercase to _lowercase
@@ -63,20 +62,20 @@ class PHPHelper
      * @param $key
      * @return integer The stolen value
      */
-    static public function steal_value(&$array, $key)
+    public static function stealValue(&$array, $key)
     {
         $value = isset($array[$key]) ? $array[$key] : null;
         unset($array[$key]);
         return $value;
     }
-    
+
     /**
      * Parse address with this format:
      * add1 add2, city, state zip
      * @param $address
      * @return array
      */
-    public static function parse_address($address)
+    public static function parseAddress($address)
     {
         /***
          * 2008-05-08 used first for quickbooks import => database table
@@ -104,7 +103,7 @@ class PHPHelper
         $city = array_pop($parts);
         $address1 = array_pop($parts);
         $address2 = array_pop($parts);
-        if (!empty($address2)){
+        if (!empty($address2)) {
             [$address1, $address2] = [$address2, $address1];
         }
 

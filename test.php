@@ -12,7 +12,7 @@ use usv\yii2helper\PHPHelper;
 
 $a = (object)['InventoryNumber' => 123, 'here it is' => 'Text here', 'a' => 3, '4' => 3];
 
-var_dump(PHPHelper::array_key_to_underscore($a));
+var_dump(PHPHelper::arrayKeyToUnderscore($a));
 exit;
 
 $s = 'InventoryNumber';
