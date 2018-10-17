@@ -34,4 +34,12 @@ trait ModelB3tTrait
             return $new_model;
         }
     }
+
+    public function saveAndLogError($runValidation = true, $attributeNames = null)
+    {
+        $this->save($runValidation, $attributeNames);
+        if (count($this->errors)){
+            \Yii::error($this->errors);
+        }
+    }
 }
