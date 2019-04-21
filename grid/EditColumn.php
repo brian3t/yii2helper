@@ -10,7 +10,7 @@ class EditColumn extends Column
     public function __construct(array $config = [])
     {
         parent::__construct($config);
-        $this->header = ucwords($this->options['name_column']) ?? 'Name';
+        $this->header = ucwords($this->options['name_column'] ?? 'Name');
     }
 
     protected function renderDataCellContent($model, $key, $index)
@@ -23,6 +23,7 @@ class EditColumn extends Column
         }
         $name_column = $this->options['name_column'] ?? 'name';
         $name = $model->$name_column ?? ($model->id);
-        return "<a href='/$class_name/view?id={$model->id}'>$name</a> ";
+        $view_or_edit = $this->options['is_edit'] ? 'update' : 'view';
+        return "<a href='/$class_name/$view_or_edit?id={$model->id}'>$name</a> ";
     }
 }
