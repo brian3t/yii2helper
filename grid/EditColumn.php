@@ -23,7 +23,7 @@ class EditColumn extends Column
         }
         $name_column = $this->options['name_column'] ?? 'name';
         $name = $model->$name_column ?? ($model->id);
-        $view_or_edit = $this->options['is_edit'] ? 'update' : 'view';
+        $view_or_edit = ($this->options['is_edit'] ?? false)? 'update' : 'view';
         return "<a href='/$class_name/$view_or_edit?id={$model->id}'>$name</a> ";
     }
 }
