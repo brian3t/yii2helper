@@ -9,6 +9,8 @@ namespace usv\yii2helper;
  */
 class PHPHelper
 {
+    public static $K_NON_SQL_PARAMS = ['expand', 'sort', 'direction'];
+
     /**
      * Implode an array, accepting null array as an input
      * @param mixed $array
@@ -44,7 +46,7 @@ class PHPHelper
     public static function arrayKeyToUnderscore($a = null)
     {
         $tmp = [];
-        if (is_null($a) && !is_array($a) && !is_object($a)) {
+        if (is_null($a) && ! is_array($a) && ! is_object($a)) {
             return $tmp;
         }
         foreach ($a as $k => $v) {
@@ -92,7 +94,7 @@ class PHPHelper
             $part = trim($part);
         });
         $state_zip = array_pop($parts);
-        if (!preg_match("/$state\s+$zip" . '$' . "/i", $state_zip, $matches)) {
+        if (! preg_match("/$state\s+$zip" . '$' . "/i", $state_zip, $matches)) {
             return [];
         }
         if (sizeof($matches) < 2) {
@@ -103,11 +105,20 @@ class PHPHelper
         $city = array_pop($parts);
         $address1 = array_pop($parts);
         $address2 = array_pop($parts);
-        if (!empty($address2)) {
+        if (! empty($address2)) {
             [$address1, $address2] = [$address2, $address1];
         }
 
         return compact('address1', 'address2', 'city', 'state', 'zip');
     }
 
+    public static function starts_with($haystack, $needle)
+    {
+        return substr_compare($haystack, $needle, 0, strlen($needle)) === 0;
+    }
+
+    public static function ends_with($haystack, $needle)
+    {
+        return substr_compare($haystack, $needle, -strlen($needle)) === 0;
+    }
 }
