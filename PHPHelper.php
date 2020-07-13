@@ -9,7 +9,7 @@ namespace usv\yii2helper;
  */
 class PHPHelper
 {
-    public static $K_NON_SQL_PARAMS = ['expand', 'sort', 'direction'];
+    public static $K_NON_SQL_PARAMS = ['expand', 'sort', 'direction','per-page'];
 
     /**
      * Implode an array, accepting null array as an input
