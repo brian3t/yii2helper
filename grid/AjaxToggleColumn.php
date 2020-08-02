@@ -5,12 +5,20 @@ namespace usv\yii2helper\grid;
 use yii\base\Model;
 use yii\grid\Column;
 
-class EditColumn extends Column
+/**
+ * Class AjaxToggleColumn
+ * An ajax column to be used within Kartik-grid or Yii2-grid
+ * Toggle to change from 0 to 1 and vice versa
+ * usage: ['attribute'=>'attr','class'=>'usv\yii2helper\grid\AjaxToggleColumn']
+ * @package usv\yii2helper\grid
+ */
+class AjaxToggleColumn extends Column
 {
+    public $attribute;
     public function __construct(array $config = [])
     {
         parent::__construct($config);
-        $this->header = ucwords($this->options['name_column'] ?? 'Name');
+        $this->header = ucwords($this->attribute ?? 'Please pass attribute');
     }
 
     protected function renderDataCellContent($model, $key, $index)
@@ -21,9 +29,6 @@ class EditColumn extends Column
         } catch (\ReflectionException $e) {
             $class_name = 'error';
         }
-        $name_column = $this->options['name_column'] ?? 'name';
-        $name = $model->$name_column ?? ($model->id);
-        $view_or_edit = ($this->options['is_edit'] ?? false)? 'update' : 'view';
-        return "<a href='/$class_name/$view_or_edit?id={$model->id}'>$name</a> ";
+        return "a button here ";
     }
 }
