@@ -130,7 +130,7 @@ class PHPHelper
     public static function rev_haversin_simple($mile)
     {
         $MILE_TO_KM = 1.60934;
-        return $mile * $MILE_TO_KM * (1 / 111) * 0.62 / 2; //1km = 1/111 deg ; multiply by .66 to balance off bird-fly vs dog-run ; divide by 2 for radius (half north half south)
+        return $mile * $MILE_TO_KM * (1 / 111) * 1.5 / 2; //1km = 1/111 deg ; multiply by .66 to balance off bird-fly vs dog-run ; divide by 2 for radius (half north half south)
     }
     /*
     function distance_to_latlng($dist)
