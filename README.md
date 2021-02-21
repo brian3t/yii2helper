@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-Yii2 greatest extensions
-========================
 Yii2 greatest extensions, developed by SuperbAppSolutions. Array helpers, better php 
 functions, Active Records shortcuts, etc...
 
@@ -41,8 +38,7 @@ Once the extension is installed, simply use it in your code by  :
 
 ```php
 <?= \usv\yii2helper\AutoloadExample::widget(); ?>```
-=======
 # yii2helper
 Yii2 greatest extension.
->>>>>>> 6f248dc8e4c07ea832fd4a364e0e3d15602cdd52
+
 
