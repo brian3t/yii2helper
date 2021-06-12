@@ -2,14 +2,24 @@
 
 namespace usv\yii2helper;
 /**
- * Created by PhpStorm.
  * User: tri
  * Date: 5/4/15
  * Time: 1:56 PM
  */
 class PHPHelper
 {
-    public static $K_NON_SQL_PARAMS = ['expand', 'sort', 'direction','per-page'];
+    public static $K_NON_SQL_PARAMS = ['expand', 'sort', 'direction', 'per-page'];
+
+    /**
+     * API parameters pre-processing
+     * E.g. convert date into db format
+     * @param $params
+     */
+    public static final function api_param_pre(&$params) {
+        foreach ($params as $param => &$value){
+            if (str_contains($param, 'date')) $value = self::date_mysql($value);
+        }
+    }
 
     /**
      * Implode an array, accepting null array as an input
@@ -17,8 +27,7 @@ class PHPHelper
      * @param string $glue
      * @return string
      */
-    public static function imp($glue = null, $array = null)
-    {
+    public static function imp($glue = null, $array = null) {
         if (empty($array)) {
             return "";
         }
@@ -28,14 +37,26 @@ class PHPHelper
     /*
      * Normalize strings to store into databases
      */
-    public static function dbNormalizeString($str)
-    {
+    public static function dbNormalizeString($str) {
         return preg_replace('/(\s)+/', "", strtolower($str));
     }
 
-    public static function dateTimeFormat($date_time)
-    {
+    public static function dateTimeFormat($date_time) {
         return \Yii::$app->formatter->asDatetime($date_time, 'php:l, d-M-Y g:i:sA T');
+    }
+
+    /**
+     * Format a date/time string to mysql YYYY-MM-DD
+     * E.g. 6/1/2021 will become 2021-06-01 05:06:07
+     * @param $date_time
+     */
+    public static final function date_mysql($date_time) {
+        try {
+            $date_obj = new \DateTime($date_time);
+            return $date_obj->format('Y-m-d h:i:s');
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
@@ -43,8 +64,7 @@ class PHPHelper
      * @param mixed $a array or object
      * @return array
      */
-    public static function arrayKeyToUnderscore($a = null)
-    {
+    public static function arrayKeyToUnderscore($a = null) {
         $tmp = [];
         if (is_null($a) && ! is_array($a) && ! is_object($a)) {
             return $tmp;
@@ -64,8 +84,7 @@ class PHPHelper
      * @param $key
      * @return integer The stolen value
      */
-    public static function stealValue(&$array, $key)
-    {
+    public static function stealValue(&$array, $key) {
         $value = isset($array[$key]) ? $array[$key] : null;
         unset($array[$key]);
         return $value;
@@ -77,8 +96,7 @@ class PHPHelper
      * @param $address
      * @return array
      */
-    public static function parseAddress($address)
-    {
+    public static function parseAddress($address) {
         /***
          * 2008-05-08 used first for quickbooks import => database table
          *
@@ -112,13 +130,11 @@ class PHPHelper
         return compact('address1', 'address2', 'city', 'state', 'zip');
     }
 
-    public static function starts_with($haystack, $needle)
-    {
+    public static function starts_with($haystack, $needle) {
         return substr_compare($haystack, $needle, 0, strlen($needle)) === 0;
     }
 
-    public static function ends_with($haystack, $needle)
-    {
+    public static function ends_with($haystack, $needle) {
         return substr_compare($haystack, $needle, -strlen($needle)) === 0;
     }
 
@@ -127,8 +143,7 @@ class PHPHelper
      * @param $mile
      * @return float
      */
-    public static function rev_haversin_simple($mile)
-    {
+    public static function rev_haversin_simple($mile) {
         $MILE_TO_KM = 1.60934;
         return $mile * $MILE_TO_KM * (1 / 111) * 1.5 / 2; //1km = 1/111 deg ; multiply by .66 to balance off bird-fly vs dog-run ; divide by 2 for radius (half north half south)
     }
