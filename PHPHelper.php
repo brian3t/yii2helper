@@ -16,7 +16,7 @@ class PHPHelper
      * @param $params
      */
     public static final function api_param_pre(&$params) {
-        foreach ($params as $param => &$value){
+        foreach ($params as $param => &$value) {
             if (str_contains($param, 'date')) $value = self::date_mysql($value);
         }
     }
@@ -104,30 +104,40 @@ class PHPHelper
          * vancouver, bc A0A 0A0
          * charlotte, n.c. 02899
          ***/
-        $address = trim($address);
-        $zip = '([a-z0-9][0-9][a-z0-9][- ]*[0-9][a-z0-9][0-9]*)([- ]+([0-9]{4}))*';
-        $state = '([.a-z]{2,4})';
-        $parts = explode(',', $address);
-        array_walk($parts, function (&$part) {
-            $part = trim($part);
-        });
-        $state_zip = array_pop($parts);
-        if (! preg_match("/$state\s+$zip" . '$' . "/i", $state_zip, $matches)) {
-            return [];
-        }
-        if (sizeof($matches) < 2) {
-            return [];
-        }
-        $state = strtoupper(str_replace('.', '', $matches[1]));
-        $zip = $matches[2];
-        $city = array_pop($parts);
-        $address1 = array_pop($parts);
-        $address2 = array_pop($parts);
-        if (! empty($address2)) {
-            [$address1, $address2] = [$address2, $address1];
-        }
+        try {
+            $address = trim($address);
+            $zip = '([a-z0-9][0-9][a-z0-9][- ]*[0-9][a-z0-9][0-9]*)([- ]+([0-9]{4}))*';
+            $state = '([.a-z]{2,4})';
+            $parts = explode(',', $address);
+            array_walk($parts, function (&$part) {
+                $part = trim($part);
+            });
+            $state_zip = array_pop($parts);
+            if (preg_match("/$state\s+$zip" . '$' . "/i", $state_zip, $matches)) {
+                if (sizeof($matches) >= 2) {
+                    $state = strtoupper(str_replace('.', '', $matches[1]));
+                    $zip = $matches[2];
+                }
+            } else { //state only
+                $state = $state_zip;
+                $zip = null;
+            }
+            $city = array_pop($parts);
+            $address1 = array_pop($parts);
+            $address2 = array_pop($parts);
+            if (! empty($address2)) {
+                [$address1, $address2] = [$address2, $address1];
+            }
 
-        return compact('address1', 'address2', 'city', 'state', 'zip');
+            return compact('address1', 'address2', 'city', 'state', 'zip');
+        } catch (\Exception $e) {
+            $address1 = null;
+            $address2 = null;
+            $city = null;
+            $state = null;
+            $zip = null;
+            return compact('address1', 'address2', 'city', 'state', 'zip');
+        }
     }
 
     public static function starts_with($haystack, $needle) {

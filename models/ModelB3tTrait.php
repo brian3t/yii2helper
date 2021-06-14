@@ -35,11 +35,19 @@ trait ModelB3tTrait
         }
     }
 
-    public function saveAndLogError($runValidation = true, $attributeNames = null)
-    {
+    /**
+     * Save model, and also log errors in any
+     * @param bool $runValidation
+     * @param null $attributeNames
+     * @return bool
+     */
+    public function saveAndLogError($runValidation = true, $attributeNames = null): bool {
         $this->save($runValidation, $attributeNames);
         if (count($this->errors)){
+            echo "Error saveAndLogError: " . json_encode($this->errors);
             \Yii::error($this->errors);
+            return false;
         }
+        return true;
     }
 }
