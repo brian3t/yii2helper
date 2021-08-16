@@ -51,6 +51,7 @@ class PHPHelper
     public static function compact_list($csv_list_of_var_names): array {
         $res = [];
         $csv_list_of_var_names = str_replace(' ', '', $csv_list_of_var_names);
+        $csv_list_of_var_names = str_replace("\n", '', $csv_list_of_var_names);
         $csv_list_of_var_names = explode(',', $csv_list_of_var_names);
         foreach ($csv_list_of_var_names as $var_name) {
             $value = $$var_name;
