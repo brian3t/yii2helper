@@ -11,9 +11,11 @@
       <path value="$PROJECT_DIR$/vendor/bower-asset/punycode" />
       <path value="$PROJECT_DIR$/vendor/bower-asset/jquery.inputmask" />
       <path value="$PROJECT_DIR$/vendor/bower-asset/yii2-pjax" />
+      <path value="$PROJECT_DIR$/vendor/paragonie/random_compat" />
+      <path value="$PROJECT_DIR$/vendor/bower-asset/inputmask" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="7.1">
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.0">
     <option name="suggestChangeDefaultLanguageLevel" value="false" />
   </component>
 </project>

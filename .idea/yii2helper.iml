@@ -14,35 +14,10 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/yiisoft/yii2" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/yiisoft/yii2-composer" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/inspectionProfiles" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bower-asset/inputmask" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library name="PHP" type="php">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/bower-asset/jquery" />
-          <root url="file://$MODULE_DIR$/vendor/bower-asset/jquery.inputmask" />
-          <root url="file://$MODULE_DIR$/vendor/bower-asset/punycode" />
-          <root url="file://$MODULE_DIR$/vendor/bower-asset/yii2-pjax" />
-          <root url="file://$MODULE_DIR$/vendor/cebe/markdown" />
-          <root url="file://$MODULE_DIR$/vendor/composer" />
-          <root url="file://$MODULE_DIR$/vendor/ezyang/htmlpurifier" />
-          <root url="file://$MODULE_DIR$/vendor/yiisoft/yii2" />
-          <root url="file://$MODULE_DIR$/vendor/yiisoft/yii2-composer" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/bower-asset/jquery" />
-          <root url="file://$MODULE_DIR$/vendor/bower-asset/jquery.inputmask" />
-          <root url="file://$MODULE_DIR$/vendor/bower-asset/punycode" />
-          <root url="file://$MODULE_DIR$/vendor/bower-asset/yii2-pjax" />
-          <root url="file://$MODULE_DIR$/vendor/cebe/markdown" />
-          <root url="file://$MODULE_DIR$/vendor/composer" />
-          <root url="file://$MODULE_DIR$/vendor/ezyang/htmlpurifier" />
-          <root url="file://$MODULE_DIR$/vendor/yiisoft/yii2" />
-          <root url="file://$MODULE_DIR$/vendor/yiisoft/yii2-composer" />
-        </SOURCES>
-      </library>
-    </orderEntry>
   </component>
 </module>

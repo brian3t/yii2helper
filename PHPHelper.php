@@ -41,6 +41,24 @@ class PHPHelper
         return preg_replace('/(\s)+/', "", strtolower($str));
     }
 
+    /**
+     * Convert a list of variables to an associative array. Var name is key, value is value
+     * This is stub function; to use, you must copy paste functions' content
+     * Otherwise, PHP won't be able to get $$var_name
+     * @param $csv_list_of_var_names 'var1,var2,var3'
+     * @return array
+     */
+    public static function compact_list($csv_list_of_var_names): array {
+        $res = [];
+        $csv_list_of_var_names = str_replace(' ', '', $csv_list_of_var_names);
+        $csv_list_of_var_names = explode(',', $csv_list_of_var_names);
+        foreach ($csv_list_of_var_names as $var_name) {
+            $value = $$var_name;
+            $res[$var_name] = $value;
+        }
+        return $res;
+    }
+
     public static function dateTimeFormat($date_time) {
         return \Yii::$app->formatter->asDatetime($date_time, 'php:l, d-M-Y g:i:sA T');
     }
@@ -49,6 +67,7 @@ class PHPHelper
      * Format a date/time string to mysql YYYY-MM-DD
      * E.g. 6/1/2021 will become 2021-06-01 05:06:07
      * @param $date_time
+     * @return string|null
      */
     public static final function date_mysql($date_time) {
         try {

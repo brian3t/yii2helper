@@ -10,14 +10,19 @@ require_once "vendor/autoload.php";
 
 use usv\yii2helper\PHPHelper;
 
-$a = (object)['InventoryNumber' => 123, 'here it is' => 'Text here', 'a' => 3, '4' => 3];
+//$a = (object)['InventoryNumber' => 123, 'here it is' => 'Text here', 'a' => 3, '4' => 3];
+$a = 411;
+$b = 'var b here';
 
-var_dump(PHPHelper::arrayKeyToUnderscore($a));
+$res = [];
+$csv_list_of_var_names = 'a,b';
+$csv_list_of_var_names = str_replace(' ', '', $csv_list_of_var_names);
+$csv_list_of_var_names = explode(',', $csv_list_of_var_names);
+foreach ($csv_list_of_var_names as $var_name) {
+    $value = $$var_name;
+    $res[$var_name] = $value;
+}
+var_dump($res);
+
+//var_dump(PHPHelper::compact_list('a,b'));
 exit;
-
-$s = 'InventoryNumber';
-$res = preg_replace_callback('([A-Z])', function ($uppercase) {
-    return '_' . strtolower(array_shift($uppercase));
-}, $s);
-
-echo $res;
