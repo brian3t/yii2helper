@@ -22,6 +22,25 @@ class PHPHelper
     }
 
     /**
+     * Convert keys of an array into underscore, e.g. Inventory Number into inventory_number
+     * @param mixed $a array or object
+     * @return array
+     */
+    public static function arrayKeyToUnderscore($a = null) {
+        $tmp = [];
+        if (is_null($a) && ! is_array($a) && ! is_object($a)) {
+            return $tmp;
+        }
+        foreach ($a as $k => $v) {
+            $k = preg_replace_callback('([A-Z])', function ($uppercase) {
+                return '_' . strtolower(array_shift($uppercase));
+            }, $k);//uppercase to _lowercase
+            $tmp[str_replace(' ', '_', $k)] = $v;
+        }
+        return $tmp;
+    }
+
+    /**
      * Implode an array, accepting null array as an input
      * @param mixed $array
      * @param string $glue
@@ -32,13 +51,6 @@ class PHPHelper
             return "";
         }
         return implode($glue, $array);
-    }
-
-    /*
-     * Normalize strings to store into databases
-     */
-    public static function dbNormalizeString($str) {
-        return preg_replace('/(\s)+/', "", strtolower($str));
     }
 
     /**
@@ -60,6 +72,13 @@ class PHPHelper
         return $res;
     }
 
+    /*
+     * Normalize strings to store into databases
+     */
+    public static function dbNormalizeString($str) {
+        return preg_replace('/(\s)+/', "", strtolower($str));
+    }
+
     public static function dateTimeFormat($date_time) {
         return \Yii::$app->formatter->asDatetime($date_time, 'php:l, d-M-Y g:i:sA T');
     }
@@ -79,35 +98,8 @@ class PHPHelper
         }
     }
 
-    /**
-     * Convert keys of an array into underscore, e.g. Inventory Number into inventory_number
-     * @param mixed $a array or object
-     * @return array
-     */
-    public static function arrayKeyToUnderscore($a = null) {
-        $tmp = [];
-        if (is_null($a) && ! is_array($a) && ! is_object($a)) {
-            return $tmp;
-        }
-        foreach ($a as $k => $v) {
-            $k = preg_replace_callback('([A-Z])', function ($uppercase) {
-                return '_' . strtolower(array_shift($uppercase));
-            }, $k);//uppercase to _lowercase
-            $tmp[str_replace(' ', '_', $k)] = $v;
-        }
-        return $tmp;
-    }
-
-    /**
-     * Steal a value from an array
-     * @param $array
-     * @param $key
-     * @return integer The stolen value
-     */
-    public static function stealValue(&$array, $key) {
-        $value = isset($array[$key]) ? $array[$key] : null;
-        unset($array[$key]);
-        return $value;
+    public static final function fwriteln($f, $str){
+        return fwrite($f, $str . PHP_EOL);
     }
 
     /**
@@ -160,14 +152,6 @@ class PHPHelper
         }
     }
 
-    public static function starts_with($haystack, $needle) {
-        return substr_compare($haystack, $needle, 0, strlen($needle)) === 0;
-    }
-
-    public static function ends_with($haystack, $needle) {
-        return substr_compare($haystack, $needle, -strlen($needle)) === 0;
-    }
-
     /**
      * Returns max delta in lat/lng, based on mile distance
      * @param $mile
@@ -177,6 +161,27 @@ class PHPHelper
         $MILE_TO_KM = 1.60934;
         return $mile * $MILE_TO_KM * (1 / 111) * 1.5 / 2; //1km = 1/111 deg ; multiply by .66 to balance off bird-fly vs dog-run ; divide by 2 for radius (half north half south)
     }
+
+    /**
+     * Steal a value from an array
+     * @param $array
+     * @param $key
+     * @return integer The stolen value
+     */
+    public static function stealValue(&$array, $key) {
+        $value = isset($array[$key]) ? $array[$key] : null;
+        unset($array[$key]);
+        return $value;
+    }
+
+    public static function starts_with($haystack, $needle) {
+        return substr_compare($haystack, $needle, 0, strlen($needle)) === 0;
+    }
+
+    public static function ends_with($haystack, $needle) {
+        return substr_compare($haystack, $needle, -strlen($needle)) === 0;
+    }
+
     /*
     function distance_to_latlng($dist)
     {
