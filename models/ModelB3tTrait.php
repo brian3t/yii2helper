@@ -41,7 +41,7 @@ trait ModelB3tTrait
      * @param null $attributeNames
      * @return bool
      */
-    public function saveAndLogError($runValidation = true, $attributeNames = null): bool {
+    public function saveAndLogError(bool $runValidation = true, $attributeNames = null): bool {
         $this->save($runValidation, $attributeNames);
         if (count($this->errors)){
             echo "Error saveAndLogError: classname= " . static::class . " | id= " . $this->id . ' | error= ' . json_encode($this->errors);
