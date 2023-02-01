@@ -19,13 +19,13 @@ oser.org/download/).
 Either run
 
 ```
-php composer.phar require --prefer-dist usv/yii2helper "*"
+php composer.phar require --prefer-dist soc/yii2helper "*"
 ```
 
 or add
 
 ```
-"usv/yii2helper": "*"
+"soc/yii2helper": "*"
 ```
 
 to the require section of your `composer.json` file.
@@ -37,7 +37,7 @@ Usage
 Once the extension is installed, simply use it in your code by  :
 
 ```php
-<?= \usv\yii2helper\AutoloadExample::widget(); ?>```
+<?= \soc\yii2helper\AutoloadExample::widget(); ?>```
 # yii2helper
 Yii2 greatest extension.
 

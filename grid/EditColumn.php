@@ -1,6 +1,6 @@
 <?php
 
-namespace usv\yii2helper\grid;
+namespace soc\yii2helper\grid;
 
 use yii\base\Model;
 use yii\grid\Column;

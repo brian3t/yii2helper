@@ -1,6 +1,6 @@
 <?php
 
-namespace usv\yii2helper\widgets;
+namespace soc\yii2helper\widgets;
 
 use Throwable;
 use yii\base\InvalidConfigException;

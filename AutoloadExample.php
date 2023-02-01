@@ -1,6 +1,6 @@
 <?php
 
-namespace usv\yii2helper;
+namespace soc\yii2helper;
 
 /**
  * This is just an example.

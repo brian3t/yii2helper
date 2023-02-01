@@ -4,7 +4,7 @@
  *
  */
 
-namespace usv\yii2helper\db;
+namespace soc\yii2helper\db;
 
 class ActiveRecordSc extends \yii\db\ActiveRecord
 {

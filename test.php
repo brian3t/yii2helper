@@ -8,7 +8,7 @@
 
 require_once "vendor/autoload.php";
 
-use usv\yii2helper\PHPHelper;
+use soc\yii2helper\PHPHelper;
 
 //$a = (object)['InventoryNumber' => 123, 'here it is' => 'Text here', 'a' => 3, '4' => 3];
 $a = 411;

@@ -1,13 +1,13 @@
 <?php
 
-namespace usv\yii2helper\grid;
+namespace soc\yii2helper\grid;
 
 use yii\base\Model;
 use yii\grid\Column;
 
 /**
  * Class ImgColumn
- * @package usv\yii2helper\grid
+ * @package soc\yii2helper\grid
  * @protected $column string
  */
 class ImgColumn extends Column

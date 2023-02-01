@@ -1,6 +1,6 @@
 <?php
 
-namespace usv\yii2helper;
+namespace soc\yii2helper;
 /**
  * User: tri
  * Date: 5/4/15

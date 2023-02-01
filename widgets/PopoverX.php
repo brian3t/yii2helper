@@ -1,5 +1,5 @@
 <?php
-namespace usv\yii2helper\widgets;
+namespace soc\yii2helper\widgets;
 class PopoverX extends \kartik\popover\PopoverX
 {
     /**

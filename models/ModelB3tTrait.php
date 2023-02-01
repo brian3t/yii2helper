@@ -5,7 +5,7 @@
  * @property \yii\db\ActiveRecord $this
  */
 
-namespace usv\yii2helper\models;
+namespace soc\yii2helper\models;
 
 use yii\db\Exception;
 

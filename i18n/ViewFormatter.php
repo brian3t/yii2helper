@@ -1,6 +1,6 @@
 <?php
 
-namespace usv\yii2helper\i18n;
+namespace soc\yii2helper\i18n;
 
 use yii\i18n\Formatter;
 

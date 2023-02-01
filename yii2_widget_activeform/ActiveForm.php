@@ -12,6 +12,7 @@ namespace soc\yii2helper\yii2_widget_activeform;
 use Exception;
 use kartik\base\BootstrapInterface;
 use kartik\base\BootstrapTrait;
+use kartik\form\ActiveFormAsset;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;

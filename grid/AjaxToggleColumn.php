@@ -1,6 +1,6 @@
 <?php
 
-namespace usv\yii2helper\grid;
+namespace soc\yii2helper\grid;
 
 use yii\base\Model;
 use yii\grid\Column;
@@ -9,8 +9,8 @@ use yii\grid\Column;
  * Class AjaxToggleColumn
  * An ajax column to be used within Kartik-grid or Yii2-grid
  * Toggle to change from 0 to 1 and vice versa
- * usage: ['attribute'=>'attr','class'=>'usv\yii2helper\grid\AjaxToggleColumn']
- * @package usv\yii2helper\grid
+ * usage: ['attribute'=>'attr','class'=>'soc\yii2helper\grid\AjaxToggleColumn']
+ * @package soc\yii2helper\grid
  */
 class AjaxToggleColumn extends Column
 {
