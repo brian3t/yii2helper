@@ -99,7 +99,7 @@ class ActiveForm extends KartikActiveForm implements BootstrapInterface
      * @inheritdoc
      */
 //    public $fieldClass = 'kartik\form\ActiveField';
-    public $fieldClass = 'soc\yii2helper\yii2_widget_activeform\ActiveForm';
+    public $fieldClass = 'soc\yii2helper\yii2_widget_activeform\ActiveField';
 
     /**
      * @var string form orientation type (for bootstrap styling). Either [[TYPE_VERTICAL]], [[TYPE_HORIZONTAL]], or

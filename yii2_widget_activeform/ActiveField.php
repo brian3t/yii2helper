@@ -887,8 +887,11 @@ class ActiveField extends KartikActiveField
         $this->initFieldOptions($options);
         Html::addCssClass($options, $this->addClass);
         $this->initDisability($options);
-
-        return parent::textInput($options);
+        $this->parts['{label}'] = $options['placeholder'] .
+          '&nbsp;<div class="form-check use_default"><label for="flexCheckDefault">Use Default</label>
+<input class="form-check-input" type="checkbox" id="flexCheckDefault"></div>';
+        $yii_text_input = parent::textInput($options);
+        return $yii_text_input;
     }
 
     /**
