@@ -888,12 +888,14 @@ class ActiveField extends KartikActiveField
         Html::addCssClass($options, $this->addClass);
         $this->initDisability($options);
         $attr = $this->attribute;
-        $input_name = \yii\helpers\BaseHtml::getInputName($this->model,'seq');
-        $this->parts['{label}'] = $options['placeholder'] .
-          "&nbsp;<div class='form-check use_default'><label for='flexCheckDefault'>Use Default</label>
-<input class='form-check-input' type='checkbox' id='flexCheckDefault_$attr' data-input_name='$input_name' onchange='sc_toggle_default()' />
+        if (isset($options['has_def_chk']) && $options['has_def_chk']) {
+          $input_name = \yii\helpers\BaseHtml::getInputName($this->model, 'seq');
+          $this->parts['{label}'] = $options['placeholder'] .
+            "&nbsp;<div class='form-check use_default'><label for='flexCheckDefault_$attr'>Use Default</label>
+<input class='form-check-input' type='checkbox' id='flexCheckDefault_$attr' data-input_name='$input_name' onchange='sc_toggle_default(event)' />
 </div>
 ";
+        }
         $yii_text_input = parent::textInput($options);
         return $yii_text_input;
     }
