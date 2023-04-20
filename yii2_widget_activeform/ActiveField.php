@@ -1,8 +1,15 @@
 <?php
+/**
+ * b3t: ActiveField.php override
+ * F1: input: add has_def_check option; to show an extra 'Use Default' checkbox
+ * F2:
+ */
 
 /**
- * ActiveField
- * 2/3
+ * @copyright  Copyright &copy; Kartik Visweswaran, Krajee.com, 2015 - 2022
+ * @package    yii2-widgets
+ * @subpackage yii2-widget-activeform
+ * @version    1.6.2
  */
 
 namespace soc\yii2helper\yii2_widget_activeform;
@@ -12,8 +19,6 @@ use kartik\base\Config;
 use kartik\base\Lib;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
-
-//use yii\helpers\Html;
 use soc\yii2helper\Html;
 use yii\helpers\Inflector;
 use kartik\base\AddonTrait;
@@ -21,8 +26,39 @@ use yii\widgets\ActiveField as YiiActiveField;
 use yii\widgets\ActiveField as KartikActiveField;
 
 /**
+ * ActiveField represents a form input field within an [[ActiveForm]] and extends the [[YiiActiveField]] component
+ * to handle various bootstrap functionality like form types, input groups/addons, toggle buttons, feedback icons, and
+ * other enhancements.
+ *
+ * For example,
+ *
+ * ```php
+ * // $form is your active form instance
+ * echo $form->field($model, 'email', ['addon' => ['type'=>'prepend', 'content'=>'@']]);
+ * echo $form->field($model, 'amount_paid', ['addon' => ['type'=>'append', 'content'=>'.00']]);
+ * echo $form->field($model, 'phone', [
+ *     'addon' => [
+ *         'type'=>'prepend',
+ *         'content'=>'<i class="fas fa-mobile-alt"></i>'
+ *     ]
+ * ]);
+ * ```
+ *
+ * Usage example with horizontal form and advanced field layout CSS configuration:
+ *
+ * ```php
+ * echo $form->field($model, 'email', ['labelSpan' => 2, 'deviceSize' => ActiveForm::SIZE_SMALL]]);
+ * echo $form->field($model, 'amount_paid', ['horizontalCssClasses' => ['wrapper' => 'hidden-xs']]);
+ * echo $form->field($model, 'phone', [
+ *     'horizontalCssClasses' => ['label' => 'col-md-2 col-sm-3 col-xs-12 myRedClass']
+ * ]);
+ * echo $form->field($model, 'special', [
+ *     'template' => '{beginLabel}For: {labelTitle}{endLabel}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}'
+ * ]);
+ * ```
+ *
  * @property ActiveForm $form
- * @author Brian3t
+ * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since  1.0
  */
 class ActiveField extends KartikActiveField
@@ -80,11 +116,13 @@ class ActiveField extends KartikActiveField
 
   /**
    * @var boolean whether to override the form layout styles and skip field formatting as per the form layout.
+     * Defaults to `false`.
    */
   public $skipFormLayout = false;
 
   /**
    * @var bool whether to auto offset toggle inputs (checkboxes / radios) horizontal form layout for BS 4.x forms.
+     * This will read the `labelSpan` and automatically offset the checkboxes/radios.
    */
   public $autoOffset = true;
 
@@ -100,16 +138,80 @@ class ActiveField extends KartikActiveField
 
   /**
    * @var integer the hint display type. If set to `self::HINT_DEFAULT`, the hint will be displayed as a text block below
+     * each input. If set to `self::HINT_SPECIAL`, then the `hintSettings` will be applied to display the field
+     * hint.
    */
   public $hintType = self::HINT_DEFAULT;
 
   /**
    * @var array the settings for displaying the hint. These settings are parsed only if `hintType` is set to
+     * `self::HINT_SPECIAL`. The following properties are supported:
+     * - `showIcon`: _boolean_, whether to display the hint via a help icon indicator. Defaults to `true`.
+     * - `icon`: _string_, the markup to display the help icon. Defaults to
+     *    - `<i class="glyphicon glyphicon-question-sign text-info"></i>` for Bootstrap 3.x.
+     *    - `<i class="fas fa-question-circle text-info"></i>` for Bootstrap 4.x and above.
+     * - `iconBesideInput`: _boolean_, whether to display the icon beside the input. Defaults to `false`. The following
+     *   actions will be taken based on this setting:
+     *   - if set to `false` the help icon is displayed beside the label and the `labelTemplate` setting is used to
+     *     render the icon and label markups.
+     *   - if set to `true` the help icon is displayed beside the input and the `inputTemplate` setting is used to
+     *     render the icon and input markups.
+     * - `labelTemplate`: _string_, the template to render the help icon and the field label. Defaults to `{label}{help}`,
+     *   where
+     *   - `{label}` will be replaced by the ActiveField label content
+     *   - `{help}` will be replaced by the help icon indicator markup
+     * - `inputTemplate`: _string_, the template to render the help icon and the field input. Defaults to `'<div
+     *   style="width:90%; float:left">{input}</div><div style="padding-top:7px">{help}</div>',`, where
+     *   - `{input}` will be replaced by the ActiveField input content
+     *   - `{help}` will be replaced by the help icon indicator markup
+     * - `onLabelClick`: _boolean_, whether to display the hint on clicking the label. Defaults to `false`.
+     * - `onLabelHover`: _boolean_, whether to display the hint on hover of the label. Defaults to `true`.
+     * - `onIconClick`: _boolean_, whether to display the hint on clicking the icon. Defaults to `true`.
+     * - `onIconHover`: _boolean_, whether to display the hint on hover of the icon. Defaults to `false`.
+     * - `iconCssClass`: _string_, the CSS class appended to the `span` container enclosing the icon.
+     * - `labelCssClass`: _string_, the CSS class appended to the `span` container enclosing label text within label tag.
+     * - `contentCssClass`: _string_, the CSS class appended to the `span` container displaying help content within
+     *   popover.
+     * - `hideOnEscape`: _boolean_, whether to hide the popover on clicking escape button on the keyboard. Defaults to `true`.
+     * - `hideOnClickOut`: _boolean_, whether to hide the popover on clicking outside the popover. Defaults to `true`.
+     * - `title`: _string_, the title heading for the popover dialog. Defaults to empty string, whereby the heading is not
+     *   displayed.
+     * - `placement`: _string_, the placement of the help popover on hover or click of the icon or label. Defaults to
+     *   `top`.
+     * - `container`: _string_, the specific element to which the popover will be appended to. Defaults to `table` when
+     *   `iconBesideInput` is `true`, else defaults to `form`
+     * - `animation`: _boolean_, whether to add a CSS fade transition effect when opening and closing the popover. Defaults to
+     *   `true`.
+     * - `delay``: _integer_|_array_, the number of milliseconds it will take to open and close the popover. Defaults to `0`.
+     * - `selector`: _integer_, the specified selector to add the popover to. Defaults to boolean `false`.
+     * - `viewport`: _string_|_array_, the element within which the popover will be bounded to. Defaults to
+     *   `['selector' => 'body', 'padding' => 0]`.
    */
   public $hintSettings = [];
 
   /**
    * @var array the feedback icon configuration (applicable for [bootstrap text inputs](http://getbootstrap.com/css/#with-optional-icons)).
+     * This must be setup as an array containing the following keys:
+     *
+     * - `type`: _string_, the icon type to use. Should be one of `raw` or `icon`. Defaults to `icon`, where the `default`,
+     *   `error` and `success` settings will be treated as an icon CSS suffix name. If set to `raw`, they will be
+     *   treated as a raw content markup.
+     * - `prefix`: _string_, the icon CSS class prefix to use if `type` is `icon`. Defaults to `glyphicon glyphicon-` for
+     *    Bootstrap 3.x and `fas fa-` for Bootstrap 4.x and above.
+     * - `default`: _string_, the icon (CSS class suffix name or raw markup) to show by default. If not set will not be
+     *   shown.
+     * - `error`: _string_, the icon (CSS class suffix name or raw markup) to use when input has an error validation. If
+     *   not set will not be shown.
+     * - `success`: _string_, the icon (CSS class suffix name or raw markup) to use when input has a success validation. If
+     *   not set will not be shown.
+     * - `defaultOptions`: _array_, the HTML attributes to apply for default icon. The special attribute `description` can
+     *   be set to describe this feedback as an `aria` attribute for accessibility. Defaults to `(default)`.
+     * - `errorOptions`: _array_, the HTML attributes to apply for error icon. The special attribute `description` can be
+     *   set to describe this feedback as an `aria` attribute for accessibility. Defaults to `(error)`.
+     * - `successOptions`: _array_, the HTML attributes to apply for success icon. The special attribute `description` can
+     *   be set to describe this feedback as an `aria` attribute for accessibility. Defaults to `(success)`.
+     *
+     * @see http://getbootstrap.com/css/#with-optional-icons
    */
   public $feedbackIcon = [];
 
@@ -177,11 +279,13 @@ class ActiveField extends KartikActiveField
 
   /**
    * @var string the template for rendering checkboxes and radios for a default Bootstrap markup with an enclosed
+     * label
    */
   public $checkEnclosedTemplate = "{beginLabel}\n{input}\n{labelTitle}\n{endLabel}\n{error}\n{hint}";
 
   /**
    * @var array the HTML attributes for the container wrapping BS4 checkbox or radio controls within which the content
+     * will be rendered via the [[checkTemplate]] or [[checkEnclosedTemplate]]
    */
   public $checkWrapperOptions = [];
 
@@ -197,11 +301,15 @@ class ActiveField extends KartikActiveField
 
   /**
    * @var string the static value for the field to be displayed for the static input OR when the form is in
+     * staticOnly mode. This value is not HTML encoded.
    */
   public $staticValue;
 
   /**
    * @var boolean|string whether to show labels for the field. Should be one of the following values:
+     * - `true`: show labels for the field
+     * - `false`: hide labels for the field
+     * - `ActiveForm::SCREEN_READER`: show in screen reader only (hide from normal display)
    */
   public $showLabels;
 
@@ -217,6 +325,10 @@ class ActiveField extends KartikActiveField
 
   /**
    * @var boolean whether to show required asterisk/star indicator after each field label when the model attribute is
+     * set to have a `required` validation rule. This will add a CSS class `has-star` to the label and show the required
+     * asterisk/star after the label based on CSS `::after` styles. If you want any other label markup to show a
+     * required asterisk for a required model attribute field, then just add the CSS class `has-star` to the label/span
+     * markup element within the active field container with CSS class `form-group`.
    */
   public $showRequiredIndicator = true;
 
@@ -232,6 +344,21 @@ class ActiveField extends KartikActiveField
 
   /**
    * @var string inherits and overrides values from parent class. The value can be overridden within
+     * [[ActiveForm::field()]] method. The following tokens are supported:
+     * - `{beginLabel}`: Container begin tag for labels (to be used typically along with `{labelTitle}` token
+     *   when you do not wish to directly use the `{label}` token)
+     * - `{labelTitle}`: Label content without tags (to be used typically when you do not wish to directly use
+     *   the `{label` token)
+     * - `{endLabel}`: Container end tag for labels (to be used typically along with `{labelTitle}` token
+     *   when you do not wish to directly use the `{label}` token)
+     * - `{label}`: Full label tag with begin tag, content and end tag
+     * - `{beginWrapper}`: Container for input,error and hint start tag. Uses a `<div>` tag if there is a input wrapper
+     *    CSS detected, else defaults to empty string.
+     * - `{input}`: placeholder for input control whatever it is
+     * - `{hint}`: placeholder for hint/help text including sub container
+     * - `{error}`: placeholder for error text including sub container
+     * - `{endWrapper}`: end tag for `{beginWrapper}`. Defaults to `</div>` if there is a input wrapper CSS detected,
+     *    else defaults to empty string.
    */
   public $template = "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}";
 
@@ -259,6 +386,14 @@ class ActiveField extends KartikActiveField
 
   /**
    * @var null|array CSS grid classes for horizontal layout. This must be an array with these keys:
+     * - `offset`: the offset grid class to append to the wrapper if no label is rendered
+     * - `label`: the label grid class
+     * - `wrapper`: the wrapper grid class
+     * - `error`: the error grid class
+     * - `hint`: the hint grid class
+     * These options are compatible and similar to [[\yii\bootstrap\ActiveForm]] and provide a complete flexible
+     * container. If `labelSpan` is set in [[ActiveForm::formConfig]] and `wrapper` is also set, then both css options
+     * are concatenated. If `wrapper` contains a 'col-' class wrapper, it overrides the tag from `labelSpan`.
    */
   public $horizontalCssClasses;
 
@@ -321,6 +456,9 @@ class ActiveField extends KartikActiveField
    */
   private $_hintPopoverContainer;
 
+    /**
+     * {@inheritdoc}
+     */
   public function __construct($config = []) {
     $layoutConfig = $this->createLayoutConfig($config);
     $config = ArrayHelper::merge($layoutConfig, $config);
@@ -414,6 +552,44 @@ class ActiveField extends KartikActiveField
     {
         parent::init();
         $this->initActiveField();
+    }
+
+    /**
+     * Renders a checkbox. This method will generate the "checked" tag attribute according to the model attribute value.
+     *
+     * @param  array  $options  the tag options in terms of name-value pairs. The following options are specially
+     * handled:
+     *
+     * - `custom`: _bool_, whether to render bootstrap 4.x custom checkbox styled control. Defaults to `false`.
+     *    This is applicable only for Bootstrap 4.x forms.
+     * - `switch`: _bool_, whether to render bootstrap 4.x custom switch styled control. Defaults to `false`.
+     *    This is applicable only for Bootstrap 4.x forms.
+     * @param  bool|null  $enclosedByLabel  whether to enclose the radio within the label. If `true`, the method will
+     * still use [[template]] to layout the checkbox and the error message except that the radio is enclosed by
+     * the label tag.
+     *
+     * @return ActiveField object
+     * @throws InvalidConfigException
+     * @see https://getbootstrap.com/docs/4.1/components/forms/#checkboxes-and-radios-1
+     * - `uncheck`: _string_, the value associated with the uncheck state of the checkbox. If not set, it will take
+     *   the default value `0`. This method will render a hidden input so that if the checkbox is not checked and is
+     *   submitted, the value of this attribute will still be submitted to the server via the hidden input.
+     * - `label`: _string_, a label displayed next to the checkbox. It will NOT be HTML-encoded. Therefore you can
+     *   pass in HTML code such as an image tag. If this is is coming from end users, you should [[Html::encode()]]
+     *   it to prevent XSS attacks. When this option is specified, the checkbox will be enclosed by a label tag.
+     * - `labelOptions`: _array_, the HTML attributes for the label tag. This is only used when the "label" option is
+     *   specified.
+     * - `container: boolean|array, the HTML attributes for the checkbox container. If this is set to false, no
+     *   container will be rendered. The special option `tag` will be recognized which defaults to `div`. This
+     *   defaults to:
+     *   `['tag' => 'div', 'class'=>'radio']`
+     * The rest of the options will be rendered as the attributes of the resulting tag. The values will be
+     * HTML-encoded using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
+     *
+     */
+    public function checkbox($options = [], $enclosedByLabel = null)
+    {
+        return $this->getToggleField(self::TYPE_CHECKBOX, $options, $enclosedByLabel);
     }
 
     /**
@@ -707,6 +883,29 @@ class ActiveField extends KartikActiveField
     }
 
     /**
+     * b3t F1 add has_def_chk
+     * @inheritdoc
+     * @throws InvalidConfigException
+     */
+    public function textInput($options = [])
+    {
+        $this->initFieldOptions($options);
+        Html::addCssClass($options, $this->addClass);
+        $this->initDisability($options);
+        $attr = $this->attribute;
+        if (isset($options['has_def_chk']) && $options['has_def_chk']) {
+            $input_name = \yii\helpers\BaseHtml::getInputName($this->model, 'seq');
+            $this->parts['{label}'] = $options['placeholder'] .
+                "&nbsp;<div class='form-check use_default'><label for='flexCheckDefault_$attr'>Use Default</label>
+<input class='form-check-input' type='checkbox' id='flexCheckDefault_$attr' data-input_name='$input_name' onchange='sc_toggle_default(event)' />
+</div>
+";
+        }
+        $yii_text_input = parent::textInput($options);
+        return $yii_text_input;
+    }
+
+    /**
      * @inheritdoc
      * @throws InvalidConfigException
      */
@@ -731,19 +930,247 @@ class ActiveField extends KartikActiveField
         return parent::widget($class, $config);
     }
 
-  /**
-   * Adds Bootstrap 4 validation class to the input options if needed.
-   * @param array $options
-   * @throws Exception
-   */
-  protected function addErrorClassBS4(&$options) {
-    $attributeName = Html::getAttributeName($this->attribute);
-    if (! $this->form->isBs(3) &&
-      $this->model->hasErrors($attributeName) &&
-      $this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_CONTAINER) {
-      Html::addCssClass($options, 'is-invalid');
+    /**
+     * Renders a static input (display only).
+     *
+     * @param  array  $options  the tag options in terms of name-value pairs.
+     *
+     * @return ActiveField object
+     * @throws Exception
+     */
+    public function staticInput($options = [])
+    {
+        $content = isset($this->staticValue) ? $this->staticValue : Html::getAttributeValue($this->model, $this->attribute);
+        $this->form->addCssClass($options, ActiveForm::BS_FORM_CONTROL_STATIC);
+        $this->parts['{input}'] = Html::tag('div', $content, $options);
+        $this->_isStatic = true;
+
+        return $this;
     }
-  }
+
+    /**
+     * Renders a multi select list box. This control extends the checkboxList and radioList available in
+     * [[YiiActiveField]] - to display a scrolling multi select list box.
+     *
+     * @param  array  $items  the data item used to generate the checkboxes or radio.
+     * @param  array  $options  the options for checkboxList or radioList. Additional parameters
+     * - `height`: _string_, the height of the multiselect control - defaults to 145px
+     * - `selector`: _string_, whether checkbox or radio - defaults to checkbox
+     * - `container`: _array_, options for the multiselect container
+     * - `unselect`: _string_, the value that should be submitted when none of the radio buttons is selected. By setting
+     *   this option, a hidden input will be generated.
+     * - `separator`: _string_, the HTML code that separates items.
+     * - `item: callable, a callback that can be used to customize the generation of the HTML code corresponding to a
+     *   single item in $items. The signature of this callback must be:
+     * - `inline`: _boolean_, whether the list should be displayed as a series on the same line, default is false
+     * - `selector`: _string_, whether the selection input is [[TYPE_RADIO]] or [[TYPE_CHECKBOX]]
+     *
+     * @return ActiveField object
+     * @throws InvalidConfigException
+     */
+    public function multiselect($items, $options = [])
+    {
+        $opts = $options;
+        $this->initDisability($opts);
+        $opts['encode'] = false;
+        $height = ArrayHelper::remove($opts, 'height', self::MULTI_SELECT_HEIGHT);
+        $selector = ArrayHelper::remove($opts, 'selector', self::TYPE_CHECKBOX);
+        $container = ArrayHelper::remove($opts, 'container', []);
+        Html::addCssStyle($container, 'height:'.$height, true);
+        Html::addCssClass($container, $this->addClass.' input-multiselect');
+        $container['tabindex'] = 0;
+        $this->_multiselect = Html::tag('div', '{input}', $container);
+
+        return $selector == self::TYPE_RADIO ? $this->radioList($items, $opts) : $this->checkboxList($items, $opts);
+    }
+
+    /**
+     * Renders a list of radio toggle buttons.
+     *
+     * @see http://getbootstrap.com/javascript/#buttons-checkbox-radio
+     *
+     * @param  array  $items  the data item used to generate the radios. The array values are the labels, while the array
+     * keys are the corresponding radio values. Note that the labels will NOT be HTML-encoded, while the values
+     * will be encoded.
+     * @param  array  $options  options (name => config) for the radio button list. The following options are specially
+     * handled:
+     *
+     * - `unselect`: _string_, the value that should be submitted when none of the radios is selected. By setting this
+     *   option, a hidden input will be generated. If you do not want any hidden input, you should explicitly set
+     *   this option as null.
+     * - `separator`: _string_, the HTML code that separates items.
+     * - `item: callable, a callback that can be used to customize the generation of the HTML code corresponding to a
+     *   single item in $items. The signature of this callback must be:
+     *
+     * ~~~
+     * function ($index, $label, $name, $checked, $value)
+     * ~~~
+     *
+     * where $index is the zero-based index of the radio button in the whole list; $label is the label for the radio
+     * button; and $name, $value and $checked represent the name, value and the checked status of the radio button
+     * input.
+     *
+     * @return ActiveField object
+     * @throws InvalidConfigException
+     */
+    public function radioButtonGroup($items, $options = [])
+    {
+        return $this->getToggleFieldList(self::TYPE_RADIO, $items, $options, true);
+    }
+
+    /**
+     * Renders a list of checkbox toggle buttons.
+     *
+     * @see http://getbootstrap.com/javascript/#buttons-checkbox-radio
+     *
+     * @param  array  $items  the data item used to generate the checkboxes. The array values are the labels, while the
+     * array keys are the corresponding checkbox values. Note that the labels will NOT be HTML-encoded, while the
+     * values will.
+     * @param  array  $options  options (name => config) for the checkbox button list. The following options are specially
+     * handled:
+     *
+     * - `unselect`: _string_, the value that should be submitted when none of the checkboxes is selected. By setting this
+     *   option, a hidden input will be generated. If you do not want any hidden input, you should explicitly set
+     *   this option as null.
+     * - `separator`: _string_, the HTML code that separates items.
+     * - `item: callable, a callback that can be used to customize the generation of the HTML code corresponding to a
+     *   single item in $items. The signature of this callback must be:
+     *
+     * ~~~
+     * function ($index, $label, $name, $checked, $value)
+     * ~~~
+     *
+     * where $index is the zero-based index of the checkbox button in the whole list; $label is the label for the
+     * checkbox button; and $name, $value and $checked represent the name, value and the checked status of the
+     * checkbox button input.
+     *
+     * @return ActiveField object
+     * @throws InvalidConfigException
+     */
+    public function checkboxButtonGroup($items, $options = [])
+    {
+        return $this->getToggleFieldList(self::TYPE_CHECKBOX, $items, $options, true);
+    }
+
+    /**
+     * Generates the hint icon
+     *
+     * @return string
+     * @throws Exception
+     */
+    protected function getHintIcon()
+    {
+        if (!$this->getHintData('showIcon')) {
+            return '';
+        }
+        $options = [];
+        Html::addCssClass($options, $this->getHintIconCss('Icon'));
+
+        return Html::tag('span', $this->getHintData('icon'), $options);
+    }
+
+    /**
+     * Gets bootstrap grid column CSS based on size
+     * @param  string  $size
+     * @return string
+     * @throws InvalidConfigException|Exception
+     */
+    protected function getColCss($size)
+    {
+        $bsVer = $this->form->getBsVer();
+        $sizes = ArrayHelper::getValue($this->form->bsColCssPrefixes, $bsVer, []);
+        if ($size == self::NOT_SET || !isset($sizes[$size])) {
+            return 'col-'.ActiveForm::SIZE_MEDIUM.'-';
+        }
+
+        return $sizes[$size];
+    }
+
+    /**
+     * Generates a toggle field (checkbox or radio)
+     *
+     * @param  string  $type  the toggle input type 'checkbox' or 'radio'.
+     * @param  array  $options  options (name => config) for the toggle input list container tag.
+     * @param  bool|null  $enclosedByLabel  whether the input is enclosed by the label tag
+     *
+     * @return ActiveField object
+     * @throws InvalidConfigException
+     */
+    protected function getToggleField($type = self::TYPE_CHECKBOX, $options = [], $enclosedByLabel = null)
+    {
+        $this->initDisability($options);
+        $bsVer = $this->form->getBsVer();
+        $notBs3 = $bsVer !== 3;
+        $custom = $this->isCustomControl($options);
+        $switch = ArrayHelper::remove($options, 'switch', false) && $notBs3 && $type === self::TYPE_CHECKBOX;
+        if ($enclosedByLabel === null) {
+            $enclosedByLabel = !$notBs3 && !$custom;
+        }
+        if (!isset($options['template'])) {
+            $this->template = $enclosedByLabel ? $this->checkEnclosedTemplate : $this->checkTemplate;
+        } else {
+            $this->template = $options['template'];
+            unset($options['template']);
+        }
+        if ($bsVer === 4) {
+            $prefix = $custom ? 'custom-control' : 'form-check';
+        } elseif ($bsVer === 5) {
+            $prefix = $custom ? 'form-check' : 'bs4 checkbox';
+        } else {
+            $prefix = $type;
+        }
+        Html::removeCssClass($options, 'form-control');
+        $this->form->removeCssClass($this->labelOptions, ActiveForm::BS_CONTROL_LABEL);
+        Html::addCssClass($this->checkWrapperOptions, $prefix);
+        if ($notBs3) {
+            Html::addCssClass($this->labelOptions, "{$prefix}-label");
+            Html::addCssClass($options, "{$prefix}-input");
+            if ($custom) {
+                $prefix = $this->form->isBs(5) ? 'form-' : 'custom-';
+                Html::addCssClass($this->checkWrapperOptions, $prefix.($switch ? 'switch' : $type));
+            }
+        } elseif (!$enclosedByLabel) {
+            Html::addCssClass($this->checkWrapperOptions, "not-enclosed");
+        }
+        $this->template = Html::tag('div', $this->template, $this->checkWrapperOptions);
+        if ($this->form->isHorizontal()) {
+            Html::removeCssClass($this->labelOptions, $this->getColCss($this->deviceSize).$this->labelSpan);
+            if ($this->autoOffset) {
+                $this->template = Html::tag('div', '', ['class' => $this->_labelCss]).
+                    Html::tag('div', $this->template, ['class' => $this->_inputCss]);
+            } else {
+                Html::removeCssClass($this->options, 'row');
+            }
+        }
+        if ($this->form->isInline()) {
+            Html::removeCssClass($this->labelOptions, $this->form->getSrOnlyCss());
+        }
+        if ($enclosedByLabel) {
+            if (isset($options['label'])) {
+                $this->parts['{labelTitle}'] = $options['label'];
+            }
+            $this->parts['{beginLabel}'] = Html::beginTag('label', $this->labelOptions);
+            $this->parts['{endLabel}'] = Html::endTag('label');
+        }
+
+        if (method_exists($this, $type)) return $this->$type($options, false);
+        return parent::$type($options, false);
+    }
+
+    /**
+     * Validates and sets disabled or readonly inputs
+     *
+     * @param  array  $options  the HTML attributes for the input
+     */
+    protected function initDisability(&$options)
+    {
+        if ($this->form->disabled && !isset($options['disabled'])) {
+            $options['disabled'] = true;
+        }
+        if ($this->form->readonly && !isset($options['readonly'])) {
+            $options['readonly'] = true;
+        }
+    }
 
     /**
      * Gets configuration parameter from formConfig
@@ -997,58 +1424,18 @@ class ActiveField extends KartikActiveField
   }
 
     /**
-     * Renders a checkbox. This method will generate the "checked" tag attribute according to the model attribute value.
+     * Sets the layout element container
      *
-     * @param array $options the tag options in terms of name-value pairs. The following options are specially
-     * @param bool|null $enclosedByLabel whether to enclose the radio within the label. If `true`, the method will
-     * still use [[template]] to layout the checkbox and the error message except that the radio is enclosed by
-     * the label tag.
-     *
-     * @return ActiveField object
-     * @throws InvalidConfigException
+     * @param  string  $type  the layout element type
+     * @param  string  $css  the css class for the container
+     * @param  boolean  $chk  whether to create the container for the layout element
      */
-    public function checkbox($options = [], $enclosedByLabel = null)
+    protected function setLayoutContainer($type, $css = '', $chk = true)
     {
-//        return $this->getToggleField(self::TYPE_CHECKBOX, $options, $enclosedByLabel); b3t disabled
-        if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
-            $this->addErrorClassIfNeeded($options);
+        if (!empty($css) && $chk) {
+            $this->_settings[$type] = "<div class='{$css}'>{{$type}}</div>";
         }
-
-        $this->addAriaAttributes($options);
-        $this->adjustLabelFor($options);
-
-        if ($enclosedByLabel) {
-            $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
-            $this->parts['{label}'] = '';
-        } else {
-            if (isset($options['label']) && !isset($this->parts['{label}'])) {
-                $this->parts['{label}'] = $options['label'];
-                if (!empty($options['labelOptions'])) {
-                    $this->labelOptions = $options['labelOptions'];
-                }
-            }
-            unset($options['labelOptions']);
-            $options['label'] = null;
-            $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
-        }
-
-        return $this;
-
     }
-
-  /**
-   * Validates and sets disabled or readonly inputs
-   *
-   * @param array $options the HTML attributes for the input
-   */
-  protected function initDisability(&$options) {
-    if ($this->form->disabled && ! isset($options['disabled'])) {
-      $options['disabled'] = true;
-    }
-    if ($this->form->readonly && ! isset($options['readonly'])) {
-      $options['readonly'] = true;
-    }
-  }
 
     /**
      * Initialize hint settings
@@ -1468,21 +1855,13 @@ class ActiveField extends KartikActiveField
      * @param  array  $options
      * @throws Exception
      */
-    public function textInput($options = [])
+    protected function addErrorClassBS4(&$options)
     {
-        $this->initFieldOptions($options);
-        Html::addCssClass($options, $this->addClass);
-        $this->initDisability($options);
-        $attr = $this->attribute;
-        if (isset($options['has_def_chk']) && $options['has_def_chk']) {
-            $input_name = \yii\helpers\BaseHtml::getInputName($this->model, 'seq');
-            $this->parts['{label}'] = $options['placeholder'] .
-                "&nbsp;<div class='form-check use_default'><label for='flexCheckDefault_$attr'>Use Default</label>
-<input class='form-check-input' type='checkbox' id='flexCheckDefault_$attr' data-input_name='$input_name' onchange='sc_toggle_default(event)' />
-</div>
-";
+        $attributeName = Html::getAttributeName($this->attribute);
+        if (!$this->form->isBs(3) &&
+            $this->model->hasErrors($attributeName) &&
+            $this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_CONTAINER) {
+            Html::addCssClass($options, 'is-invalid');
         }
-        $yii_text_input = parent::textInput($options);
-        return $yii_text_input;
     }
 }
